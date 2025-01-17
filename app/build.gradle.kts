@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "de.jonasfranz.ktor.client.karoo"
+    namespace = "de.jonasfranz.ktorclientkarooexample"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "de.jonasfranz.ktor.client.karoo"
+        applicationId = "de.jonasfranz.ktorclientkarooexample"
         minSdk = 23
         targetSdk = 35
         versionCode = 1
@@ -20,6 +20,7 @@ android {
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
