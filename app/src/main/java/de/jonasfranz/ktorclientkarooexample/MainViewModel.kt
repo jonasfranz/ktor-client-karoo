@@ -32,7 +32,7 @@ class MainViewModel(app: Application): AndroidViewModel(app){
     private lateinit var karooSystem: KarooSystemService
 
     private val client: HttpClient by lazy {
-        HttpClient(Android)
+        HttpClient(Karoo(karooSystem))
     }
 
     private fun initEvents() {
