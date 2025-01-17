@@ -66,7 +66,7 @@ publishing {
         }
     }
     publications {
-        register<MavenPublication>("karoo-ext") {
+        register<MavenPublication>("ktor-client-karoo") {
             artifactId = moduleName
             groupId = "de.jonasfranz"
             version = libVersion
