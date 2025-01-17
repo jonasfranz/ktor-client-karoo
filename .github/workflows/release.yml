@@ -1,0 +1,85 @@
+name: Release if version changes
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: "release"
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.detect_version.outputs.VERSION }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get tags
+        run: git fetch --tags origin
+
+      - name: Detect Version Change
+        id: detect_version
+        run: |
+          # Get current and previous versions
+          current_version=$(grep 'libVersion' lib/build.gradle.kts | sed -e 's/.*"\(.*\)".*/\1/' | head -n 1)
+          echo "Current version in the repository: $current_version"
+
+          # Check for existing tag for this version
+          if git tag -l | grep -q "$current_version"; then
+            echo "Version $current_version already tagged. No new release will be created."
+          else
+            echo "Version $current_version is new."
+            echo "::set-output name=VERSION::$current_version"
+          fi
+
+  build:
+    runs-on: ubuntu-latest
+    needs: check
+    if: needs.check.outputs.VERSION
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Assemble library and app
+        run: ./gradlew --no-daemon assembleRelease
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.check.outputs.VERSION }}
+          release_name: ${{ needs.check.outputs.VERSION }}
+          draft: false
+          prerelease: true
+
+      - name: Publish library to Github packges
+        env:
+          GITHUB_USERNAME: actions
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew --no-daemon publish
+
+      - name: Upload Sample
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./app/build/outputs/apk/release/app-release.apk
+          asset_name: ktor-client-karoo-sample.apk
+          asset_content_type: application/vnd.android.package-archive
