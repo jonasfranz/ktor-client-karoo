@@ -55,6 +55,9 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Assemble library and app
+        env:
+          GITHUB_USERNAME: actions
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew --no-daemon assembleRelease
 
       - name: Create Release
