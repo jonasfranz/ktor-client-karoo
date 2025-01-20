@@ -13,6 +13,7 @@ It enables seamless HTTP requests within applications using the Karoo APIs.
 - Http Requests will always be sent through the Karoo System Service even though a network connection
 on the device it self might be available.
 - Websockets and SSE are not supported.
+- Requests and Responses are limited to 100KB in size
 
 ## Installation
 To include this library in your project, add the following dependency to your `build.gradle`:
