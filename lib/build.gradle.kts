@@ -7,7 +7,7 @@ plugins {
 
 
 val moduleName = "ktor-client-karoo"
-val libVersion = "1.0.0"
+val libVersion = "1.0.1"
 
 android {
     namespace = "de.jonasfranz.ktor.client.karoo"
