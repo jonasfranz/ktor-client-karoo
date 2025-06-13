@@ -20,7 +20,7 @@ To include this library in your project, add the following dependency to your `b
 
 ```gradle
 dependencies {
-    implementation "de.jonasfranz.ktor-client-karoo:1.0.0"
+    implementation "de.jonasfranz:ktor-client-karoo:1.0.1"
 }
 ```
 
