@@ -2,9 +2,9 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.android.junit5)
     `maven-publish`
 }
-
 
 val moduleName = "ktor-client-karoo"
 val libVersion = "1.0.1"
@@ -24,7 +24,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -45,13 +45,24 @@ android {
             withSourcesJar()
         }
     }
+
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
     api(libs.ktor.client.core)
     implementation(libs.karoo.ext)
-}
 
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+}
 
 // To build an publish locally: gradle lib:assemblerelease lib:publishtomavenlocal
 publishing {
@@ -64,6 +75,7 @@ publishing {
                 password = System.getenv("GITHUB_TOKEN")
             }
         }
+        mavenLocal()
     }
     publications {
         register<MavenPublication>("ktor-client-karoo") {

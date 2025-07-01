@@ -1,10 +1,11 @@
 name: Release if version changes
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Run tests"]
+    branches: [main]
+    types:
+      - completed
 
 concurrency:
   group: "release"
@@ -12,6 +13,7 @@ concurrency:
 
 jobs:
   check:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     outputs:
       VERSION: ${{ steps.detect_version.outputs.VERSION }}
@@ -38,6 +40,10 @@ jobs:
           fi
 
   build:
+    permissions:
+      packages: write
+      contents: write
+
     runs-on: ubuntu-latest
     needs: check
     if: needs.check.outputs.VERSION
@@ -49,7 +55,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 21
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3

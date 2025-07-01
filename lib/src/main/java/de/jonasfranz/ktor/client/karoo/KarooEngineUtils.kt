@@ -13,19 +13,19 @@ import io.ktor.utils.io.toByteArray
 import kotlin.coroutines.CoroutineContext
 
 internal fun HttpResponseState.Complete.toHttpResponseData(callContext: CoroutineContext): HttpResponseData {
-    val body = body?.run { ByteReadChannel(this) } ?: ByteReadChannel.Empty;
+    val body = body?.run { ByteReadChannel(this) } ?: ByteReadChannel.Empty
     return HttpResponseData(
-        statusCode =  HttpStatusCode.fromValue(statusCode),
+        statusCode = HttpStatusCode.fromValue(statusCode),
         headers = HeadersImpl(headers.mapValues { it.value.split(",") }),
         body = body,
         version = HttpProtocolVersion.HTTP_1_1,
         callContext = callContext,
-        requestTime = GMTDate()
+        requestTime = GMTDate(),
     )
 }
 
-internal suspend fun OutgoingContent.toByteArray() : ByteArray {
-    return when (this) {
+internal suspend fun OutgoingContent.toByteArray(): ByteArray =
+    when (this) {
         is OutgoingContent.NoContent -> ByteArray(0)
         is OutgoingContent.ByteArrayContent -> bytes()
         is OutgoingContent.ReadChannelContent -> readFrom().toByteArray()
@@ -44,4 +44,3 @@ internal suspend fun OutgoingContent.toByteArray() : ByteArray {
         }
         else -> ByteArray(0)
     }
-}
