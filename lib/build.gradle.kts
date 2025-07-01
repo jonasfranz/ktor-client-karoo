@@ -47,6 +47,7 @@ android {
         }
     }
 
+    @Suppress("UnstableApiUsage")
     testOptions {
         unitTests {
             isReturnDefaultValues = true
@@ -58,7 +59,6 @@ dependencies {
     api(libs.ktor.client.core)
     implementation(libs.karoo.ext)
 
-    testImplementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
     testImplementation(libs.mockk)

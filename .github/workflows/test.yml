@@ -22,7 +22,15 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Run tests
+      - name: Run KtLint via reviewdog
+        uses: reviewdog/action-gradle@v1
+        with:
+          gradle_command: ktlintCheck
+          reporter: github-pr-check
+          fail_on_error: true
+          filter_mode: nofilter
+
+      - name: Run Unit Tests
         env:
           GITHUB_USERNAME: actions
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

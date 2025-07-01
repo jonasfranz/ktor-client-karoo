@@ -46,6 +46,8 @@ dependencies {
     implementation(libs.ktor.client.android)
     implementation(libs.karoo.ext)
 
+    ktlintRuleset(libs.ktlint.ruleset.compose)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
