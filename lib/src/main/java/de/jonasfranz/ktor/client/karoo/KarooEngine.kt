@@ -43,7 +43,7 @@ class KarooEngine(override val config: KarooEngineConfig) : HttpClientEngineBase
                     headers = headers,
                     waitForConnection = false,
                 ),
-                onError = { cancel(it) }
+                onError = { close(KarooServiceException(it)) }
             ) { event: OnHttpResponse ->
                 val state = event.state
                 if (state is HttpResponseState.Complete) {
