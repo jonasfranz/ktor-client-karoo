@@ -42,7 +42,7 @@ jobs:
         run: |
           shopt -s globstar
           for i in **/*Check.xml; do 
-            reviewdog -f=checkstyle -name="ktlint" -reporter=github-pr-review < $i;
+            reviewdog -f=checkstyle -name="ktlint" -reporter=github-pr-review -tee < $i;
           done
 
   test:
