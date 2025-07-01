@@ -11,15 +11,14 @@ import io.ktor.client.request.HttpRequestData
 import io.ktor.client.request.HttpResponseData
 import io.ktor.utils.io.InternalAPI
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.timeout
 
-
-class KarooEngine(override val config: KarooEngineConfig) : HttpClientEngineBase("karoo") {
-
+class KarooEngine(
+    override val config: KarooEngineConfig,
+) : HttpClientEngineBase("karoo") {
     private val karooSystem: KarooSystemService
         get() = config.karooSystemService
 
@@ -35,28 +34,27 @@ class KarooEngine(override val config: KarooEngineConfig) : HttpClientEngineBase
             val callContext = callContext()
             val headers = mutableMapOf<String, String>()
             mergeHeaders(data.headers, data.body, headers::put)
-            val listenerId = karooSystem.addConsumer(
-                params = OnHttpResponse.MakeHttpRequest(
-                    method = data.method.value,
-                    url = data.url.toString(),
-                    body = data.body.toByteArray(),
-                    headers = headers,
-                    waitForConnection = false,
-                ),
-                onError = { close(KarooServiceException(it)) }
-            ) { event: OnHttpResponse ->
-                val state = event.state
-                if (state is HttpResponseState.Complete) {
-                    trySend(state.toHttpResponseData(callContext))
+            val listenerId =
+                karooSystem.addConsumer(
+                    params =
+                        OnHttpResponse.MakeHttpRequest(
+                            method = data.method.value,
+                            url = data.url.toString(),
+                            body = data.body.toByteArray(),
+                            headers = headers,
+                            waitForConnection = false,
+                        ),
+                    onError = { close(KarooServiceException(it)) },
+                ) { event: OnHttpResponse ->
+                    val state = event.state
+                    if (state is HttpResponseState.Complete) {
+                        trySend(state.toHttpResponseData(callContext))
+                    }
                 }
-            }
             awaitClose {
                 karooSystem.removeConsumer(listenerId)
             }
-        }
-            .timeout(config.requestTimeout)
+        }.timeout(config.requestTimeout)
             .first()
     }
-
-
 }

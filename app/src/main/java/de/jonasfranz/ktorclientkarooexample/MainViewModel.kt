@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import de.jonasfranz.ktor.client.karoo.Karoo
 import io.hammerhead.karooext.KarooSystemService
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.android.Android
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,11 +16,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.random.Random
 
-data class MainViewState (
-    val responseText: String = "n/a"
+data class MainViewState(
+    val responseText: String = "n/a",
 )
 
-class MainViewModel(app: Application): AndroidViewModel(app){
+class MainViewModel(
+    app: Application,
+) : AndroidViewModel(app) {
     init {
         initEvents()
     }
@@ -36,7 +37,6 @@ class MainViewModel(app: Application): AndroidViewModel(app){
     }
 
     private fun initEvents() {
-
         viewModelScope.launch {
             suspendCancellableCoroutine { cont ->
                 karooSystem = KarooSystemService(getApplication<Application>().applicationContext)
@@ -54,14 +54,14 @@ class MainViewModel(app: Application): AndroidViewModel(app){
                 val response = client.get("https://api.sampleapis.com/wines/sparkling/${Random.nextInt(10)}")
                 _uiState.update {
                     it.copy(
-                        responseText = response.bodyAsText()
+                        responseText = response.bodyAsText(),
                     )
                 }
             } catch (err: Exception) {
                 err.printStackTrace()
                 _uiState.update {
                     it.copy(
-                        responseText = err.message ?: "Unknown Error"
+                        responseText = err.message ?: "Unknown Error",
                     )
                 }
             }

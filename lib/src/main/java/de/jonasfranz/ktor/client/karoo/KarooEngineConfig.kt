@@ -7,8 +7,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class KarooEngineConfig(
     var karooSystemService: KarooSystemService,
-): HttpClientEngineConfig() {
-
+) : HttpClientEngineConfig() {
     /**
      * Specifies a maximum duration a HTTP request is allowed to take.
      */

@@ -1,3 +1,5 @@
 package de.jonasfranz.ktor.client.karoo
 
-class KarooServiceException(reason: String): Exception(reason)
+class KarooServiceException(
+    reason: String,
+) : Exception(reason)

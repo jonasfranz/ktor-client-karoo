@@ -43,11 +43,12 @@ inline fun <reified T> KarooSystemService.mockEvent(crossinline onHandleEvent: (
         try {
             when {
                 event == null -> throw Exception("EVENT IS NULL")
-                else -> handler.captured.onNext(
-                    onHandleEvent(
-                        event,
-                    ).bundleWithSerializable(packageName)
-                )
+                else ->
+                    handler.captured.onNext(
+                        onHandleEvent(
+                            event,
+                        ).bundleWithSerializable(packageName),
+                    )
             }
         } catch (exception: Throwable) {
             handler.captured.onError(exception.toString())
