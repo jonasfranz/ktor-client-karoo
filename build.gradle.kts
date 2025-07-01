@@ -17,7 +17,7 @@ subprojects {
         android.set(true)
         outputToConsole.set(true)
         reporters {
-            reporter(ReporterType.SARIF)
+            reporter(ReporterType.CHECKSTYLE)
         }
     }
 }

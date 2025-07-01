@@ -29,7 +29,7 @@ jobs:
         env:
           GITHUB_USERNAME: actions
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew ktlintCheck
+        run: ./gradlew --no-daemon ktlintCheck
 
       - name: Publish Lint Report
         if: success() || failure() # always run even if the previous step fails
