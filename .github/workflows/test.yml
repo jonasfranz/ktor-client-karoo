@@ -32,6 +32,8 @@ jobs:
         run: ./gradlew --no-daemon ktlintCheck
 
       - name: Publish Lint Report
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: success() || failure() # always run even if the previous step fails
         run: |
           shopt -s globstar
