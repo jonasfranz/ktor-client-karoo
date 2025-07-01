@@ -7,7 +7,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,13 +22,33 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Run KtLint via reviewdog
-        uses: reviewdog/action-gradle@v1
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1
+
+      - name: Run KtLint
+        env:
+          GITHUB_USERNAME: actions
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew ktlintCheck
+
+      - name: Publish Lint Report
+        if: success() || failure() # always run even if the previous step fails
+        run: for i in ./**/*Check.xml; do reviewdog -f=checkstyle -name="ktlint" -reporter=github-pr-review < $i; done
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
-          gradle_command: ktlintCheck
-          reporter: github-pr-check
-          fail_on_error: true
-          filter_mode: nofilter
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Run Unit Tests
         env:

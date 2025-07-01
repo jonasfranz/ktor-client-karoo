@@ -1,3 +1,5 @@
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     alias(libs.plugins.ktlint.gradle) apply false
@@ -14,6 +16,8 @@ subprojects {
         version.set("1.6.0")
         android.set(true)
         outputToConsole.set(true)
+        reporters {
+            reporter(ReporterType.SARIF)
+        }
     }
-
 }

@@ -6,7 +6,6 @@ plugins {
     `maven-publish`
 }
 
-
 val moduleName = "ktor-client-karoo"
 val libVersion = "1.0.1"
 
@@ -25,7 +24,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -64,7 +63,6 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
 }
-
 
 // To build an publish locally: gradle lib:assemblerelease lib:publishtomavenlocal
 publishing {
