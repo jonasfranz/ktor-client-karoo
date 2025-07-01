@@ -8,6 +8,10 @@ concurrency:
 
 jobs:
   lint:
+    permissions:
+      checks: write
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -42,6 +46,8 @@ jobs:
           done
 
   test:
+    permissions:
+      checks: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
