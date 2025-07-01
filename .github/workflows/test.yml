@@ -33,7 +33,11 @@ jobs:
 
       - name: Publish Lint Report
         if: success() || failure() # always run even if the previous step fails
-        run: for i in ./**/*Check.xml; do reviewdog -f=checkstyle -name="ktlint" -reporter=github-pr-review < $i; done
+        run: |
+          shopt -s globstar
+          for i in **/*Check.xml; do 
+            reviewdog -f=checkstyle -name="ktlint" -reporter=github-pr-review < $i;
+          done
 
   test:
     runs-on: ubuntu-latest
